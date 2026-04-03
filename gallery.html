@@ -103,6 +103,24 @@
             color: #c06088;
         }
 
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: #c8809e;
+            font-size: 0.9rem;
+        }
+        .loading.hidden { display: none; }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid rgba(255, 182, 193, 0.3);
+            border-top-color: #ff9a9e;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* Gallery grid - masonry */
         .gallery {
             columns: 2;
@@ -301,6 +319,12 @@
             <div class="photo-count" id="photoCount"></div>
         </div>
 
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>正在加载照片...</p>
+        </div>
+
         <!-- Gallery -->
         <div class="gallery" id="gallery"></div>
 
@@ -329,6 +353,7 @@
     // 命名：(1).jpg, (2).jpg, (3).jpg ...
     // ============================================
     const PER_PAGE = 12;
+    const MAX_PROBE = 200; // 最多探测到第 200 张
 
     let allPhotos = [];
     let currentPage = 1;
@@ -336,75 +361,93 @@
     let lbIndex = 0;
     let totalPages = 1;
 
-    // 自动探测：逐个尝试加载图片，失败则停止
-    function detectPhotos() {
+    // 探测单张图片是否存在
+    function probeImage(n) {
         return new Promise(resolve => {
-            const found = [];
-            let checking = 1;
+            const img = new Image();
+            img.onload = () => resolve(n);
+            img.onerror = () => resolve(null);
+            img.src = 'images/(' + n + ').jpg';
+        });
+    }
 
-            function check() {
-                const img = new Image();
-                img.onload = () => {
-                    found.push(checking);
-                    checking++;
-                    check();
-                };
-                img.onerror = () => resolve(found);
-                img.src = `images/(${checking}).jpg`;
-            }
-
-            check();
+    // 并行批量探测：同时发出所有请求，极速完成
+    function detectPhotos() {
+        var probes = [];
+        for (var i = 1; i <= MAX_PROBE; i++) {
+            probes.push(probeImage(i));
+        }
+        return Promise.all(probes).then(function(results) {
+            return results.filter(function(n) { return n !== null; }).sort(function(a, b) { return a - b; });
         });
     }
 
     // 渲染当前页
     function render(page) {
         currentPage = page;
-        const start = (page - 1) * PER_PAGE;
-        const end = Math.min(start + PER_PAGE, allPhotos.length);
+        var start = (page - 1) * PER_PAGE;
+        var end = Math.min(start + PER_PAGE, allPhotos.length);
         currentPhotos = allPhotos.slice(start, end);
 
         // 渲染图片
-        const gallery = document.getElementById('gallery');
+        var gallery = document.getElementById('gallery');
         gallery.innerHTML = '';
-        currentPhotos.forEach((n, i) => {
-            const item = document.createElement('div');
+        currentPhotos.forEach(function(n, i) {
+            var item = document.createElement('div');
             item.className = 'gallery-item';
-            item.onclick = () => openLightbox(i);
+            item.onclick = (function(idx) { return function() { openLightbox(idx); }; })(i);
             item.innerHTML =
-                '<img src="images/(' + n + ').jpg" alt="照片 ' + n + '" loading="lazy">' +
-                '<div class="caption">\uD83C\uDF38 第 ' + n + ' 张</div>';
+                '<img src="images/(' + n + ').jpg" alt="\u7167\u7247 ' + n + '" loading="lazy">' +
+                '<div class="caption">\uD83C\uDF38 \u7B2C ' + n + ' \u5F20</div>';
             gallery.appendChild(item);
         });
 
         // 渲染分页
-        const pagination = document.getElementById('pagination');
+        var pagination = document.getElementById('pagination');
         pagination.innerHTML = '';
 
         if (totalPages > 1) {
             // 上一页
-            const prev = document.createElement('button');
+            var prev = document.createElement('button');
             prev.className = 'page-btn';
             prev.innerHTML = '\u276E';
             prev.disabled = page === 1;
-            prev.onclick = () => render(page - 1);
+            prev.onclick = function() { render(page - 1); };
             pagination.appendChild(prev);
 
-            // 页码
-            for (let p = 1; p <= totalPages; p++) {
-                const btn = document.createElement('button');
-                btn.className = 'page-btn' + (p === page ? ' active' : '');
-                btn.textContent = p;
-                btn.onclick = () => render(p);
-                pagination.appendChild(btn);
+            // 页码（超过7页时省略中间）
+            var pages = [];
+            if (totalPages <= 7) {
+                for (var p = 1; p <= totalPages; p++) pages.push(p);
+            } else {
+                pages.push(1);
+                if (page > 3) pages.push('...');
+                for (var p = Math.max(2, page - 1); p <= Math.min(totalPages - 1, page + 1); p++) pages.push(p);
+                if (page < totalPages - 2) pages.push('...');
+                pages.push(totalPages);
             }
 
+            pages.forEach(function(p) {
+                if (p === '...') {
+                    var dot = document.createElement('span');
+                    dot.textContent = '...';
+                    dot.style.cssText = 'color:#c8809e;padding:0 4px;';
+                    pagination.appendChild(dot);
+                } else {
+                    var btn = document.createElement('button');
+                    btn.className = 'page-btn' + (p === page ? ' active' : '');
+                    btn.textContent = p;
+                    btn.onclick = (function(pg) { return function() { render(pg); }; })(p);
+                    pagination.appendChild(btn);
+                }
+            });
+
             // 下一页
-            const next = document.createElement('button');
+            var next = document.createElement('button');
             next.className = 'page-btn';
             next.innerHTML = '\u276F';
             next.disabled = page === totalPages;
-            next.onclick = () => render(page + 1);
+            next.onclick = function() { render(page + 1); };
             pagination.appendChild(next);
         }
 
@@ -438,15 +481,15 @@
     }
 
     function updateLightbox() {
-        const n = currentPhotos[lbIndex];
+        var n = currentPhotos[lbIndex];
         document.getElementById('lbImg').src = 'images/(' + n + ').jpg';
         document.getElementById('lbCounter').textContent =
             (lbIndex + 1) + ' / ' + currentPhotos.length;
     }
 
     // 键盘支持
-    document.addEventListener('keydown', e => {
-        const lb = document.getElementById('lightbox');
+    document.addEventListener('keydown', function(e) {
+        var lb = document.getElementById('lightbox');
         if (!lb.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowLeft') lbNav(-1);
@@ -454,15 +497,18 @@
     });
 
     // 点击背景关闭
-    document.getElementById('lightbox').addEventListener('click', e => {
+    document.getElementById('lightbox').addEventListener('click', function(e) {
         if (e.target === document.getElementById('lightbox')) closeLightbox();
     });
 
-    // 启动：自动探测 → 渲染
+    // 启动
     window._firstLoad = true;
-    detectPhotos().then(photos => {
+    detectPhotos().then(function(photos) {
         allPhotos = photos;
         totalPages = Math.ceil(allPhotos.length / PER_PAGE);
+
+        // 隐藏 loading
+        document.getElementById('loading').classList.add('hidden');
 
         // 更新照片计数
         document.getElementById('photoCount').innerHTML =
