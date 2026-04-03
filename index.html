@@ -376,27 +376,99 @@
             margin-top: 12px;
         }
 
-        /* Photo wall */
+        /* Photo wall - masonry style */
         .photo-wall {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            columns: 2;
+            column-gap: 12px;
             margin-top: 14px;
         }
 
-        .photo-placeholder {
-            aspect-ratio: 1;
-            border-radius: 12px;
+        .photo-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 12px rgba(255, 105, 135, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 24px rgba(255, 105, 135, 0.2);
+        }
+
+        .photo-item img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 12px 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.35));
+            color: #fff;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .photo-item:hover .photo-caption { opacity: 1; }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        .lightbox.active { display: flex; }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(255, 182, 193, 0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            transition: transform 0.3s;
-            cursor: default;
-            border: 1px solid rgba(255, 182, 193, 0.3);
+            transition: background 0.3s;
         }
 
-        .photo-placeholder:hover { transform: scale(1.08) rotate(2deg); }
+        .lightbox-close:hover { background: rgba(255, 255, 255, 0.3); }
+
+        @media (min-width: 600px) {
+            .photo-wall { columns: 3; }
+        }
 
         /* Wishlist */
         .wishlist {
@@ -515,7 +587,7 @@
             .container { padding: 40px 16px 30px; }
             .avatar { width: 100px; height: 100px; font-size: 44px; }
             .favorites { grid-template-columns: repeat(2, 1fr); }
-            .photo-wall { grid-template-columns: repeat(3, 1fr); }
+            .photo-wall { columns: 2; }
         }
     </style>
 </head>
@@ -634,15 +706,45 @@
             <h2>&#x1F4F8; 生活碎片</h2>
             <p>用镜头记录下的美好瞬间：</p>
             <div class="photo-wall">
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0);">&#x1F338;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">&#x2600;&#xFE0F;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">&#x1F33F;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">&#x1F30A;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #f48fb1);">&#x1F431;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #f3e5f5, #ce93d8);">&#x1F319;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fff8e1, #ffecb3);">&#x2B50;</div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #ef9a9a);">&#x1F370;</div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(1).jpg" alt="照片 1" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 1</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(2).jpg" alt="照片 2" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 2</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(3).jpg" alt="照片 3" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 3</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(4).jpg" alt="照片 4" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 4</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(5).jpg" alt="照片 5" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 5</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(6).jpg" alt="照片 6" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 6</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(7).jpg" alt="照片 7" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 7</div>
+                </div>
+                <div class="photo-item" onclick="openLightbox(this)">
+                    <img src="images/(8).jpg" alt="照片 8" loading="lazy">
+                    <div class="photo-caption">&#x1F338; 照片 8</div>
+                </div>
             </div>
+        </div>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+            <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+            <img id="lightbox-img" src="" alt="preview">
         </div>
 
         <!-- Timeline -->
@@ -713,7 +815,7 @@
 
         <!-- Links -->
         <div class="links">
-            <a href="https://github.com/wlcxsysb410" target="_blank">
+            <a href="https://github.com/iXuuu" target="_blank">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                 GitHub
             </a>
@@ -746,6 +848,25 @@
             heart.style.setProperty('--delay', (Math.random() * 12) + 's');
             heartsContainer.appendChild(heart);
         }
+
+        // Lightbox
+        function openLightbox(el) {
+            const img = el.querySelector('img');
+            document.getElementById('lightbox-img').src = img.src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            if (e.target === document.getElementById('lightbox') || e.target.classList.contains('lightbox-close')) {
+                document.getElementById('lightbox').classList.remove('active');
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('lightbox').classList.remove('active');
+            }
+        });
 
         // Decorative paw prints
         const pawPositions = [

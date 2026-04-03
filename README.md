@@ -1,10 +1,10 @@
-# 🌸 wlcxsysb410.github.io
+# 🌸 iXuuu.github.io
 
 这是 **iXu** 的个人主页，一个粉色可爱风格的静态网站。
 
 ## ✨ 预览
 
-访问地址：[https://wlcxsysb410.github.io](https://wlcxsysb410.github.io)
+访问地址：[https://iXuuu.github.io](https://iXuuu.github.io)
 
 ## 🎀 页面内容
 
