@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wlcxsysb410 的个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4f0 30%, #ffd6ec 60%, #fce4ec 100%);
+            color: #5c3a4a;
+            overflow-x: hidden;
+        }
+
+        /* Floating hearts */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: var(--size);
+            opacity: 0;
+            animation: floatUp var(--duration) ease-in infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translateY(100vh) rotate(0deg) scale(0.5); }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.3; }
+            100% { opacity: 0; transform: translateY(-10vh) rotate(360deg) scale(1); }
+        }
+
+        /* Soft floating blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+            animation: blobFloat 10s ease-in-out infinite alternate;
+        }
+
+        .blob-1 { width: 350px; height: 350px; background: #ffb6c1; top: -80px; right: -80px; }
+        .blob-2 { width: 280px; height: 280px; background: #ffc0cb; bottom: -60px; left: -60px; animation-delay: -3s; }
+        .blob-3 { width: 220px; height: 220px; background: #ffcce5; top: 45%; left: 60%; animation-delay: -6s; }
+        .blob-4 { width: 200px; height: 200px; background: #f8bbd0; top: 20%; left: 10%; animation-delay: -2s; }
+
+        @keyframes blobFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(20px, -20px) scale(1.15); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 60px 24px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header section */
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #ffdde1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 32px rgba(255, 105, 135, 0.3);
+            animation: bounce 3s ease-in-out infinite;
+            user-select: none;
+            border: 4px solid rgba(255, 255, 255, 0.7);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #ff6b9d, #ee5a9f, #ff9a9e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.05rem;
+            color: #b8748c;
+            line-height: 1.7;
+        }
+
+        /* Status badge */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 12px;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #c06088;
+            border: 1px solid rgba(255, 182, 193, 0.4);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Cards */
+        .card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(16px);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(255, 105, 135, 0.08);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255, 105, 135, 0.18);
+        }
+
+        .card h2 {
+            font-size: 1.15rem;
+            margin-bottom: 14px;
+            color: #e8578a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card p {
+            line-height: 1.8;
+            color: #7a5068;
+        }
+
+        .card strong {
+            color: #e8578a;
+        }
+
+        /* Interests tags */
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, rgba(255, 154, 158, 0.2), rgba(254, 207, 239, 0.3));
+            border: 1px solid rgba(255, 105, 135, 0.2);
+            color: #d4527a;
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-size: 0.88rem;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .tag:hover {
+            background: linear-gradient(135deg, rgba(255, 154, 158, 0.35), rgba(254, 207, 239, 0.45));
+            transform: scale(1.05);
+        }
+
+        /* Favorites grid */
+        .favorites {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .fav-item {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .fav-item:hover {
+            transform: scale(1.03);
+        }
+
+        .fav-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .fav-label {
+            font-size: 0.82rem;
+            color: #b8748c;
+            margin-bottom: 4px;
+        }
+
+        .fav-value {
+            font-size: 0.95rem;
+            color: #7a5068;
+            font-weight: 600;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin-top: 14px;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 6px;
+            top: 4px;
+            bottom: 4px;
+            width: 2px;
+            background: linear-gradient(to bottom, #ffb6c1, #fecfef);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 18px;
+            padding-left: 8px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -22px;
+            top: 7px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border: 2px solid #fff;
+            box-shadow: 0 0 6px rgba(255, 105, 135, 0.3);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #c8809e;
+            margin-bottom: 2px;
+        }
+
+        .timeline-text {
+            font-size: 0.95rem;
+            color: #7a5068;
+            line-height: 1.6;
+        }
+
+        /* Music card */
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 14px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .music-icon {
+            font-size: 36px;
+            animation: spin 4s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .music-info {
+            flex: 1;
+        }
+
+        .music-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #7a5068;
+        }
+
+        .music-artist {
+            font-size: 0.82rem;
+            color: #b8748c;
+        }
+
+        .music-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 20px;
+        }
+
+        .music-bar {
+            width: 3px;
+            background: linear-gradient(to top, #ff9a9e, #fecfef);
+            border-radius: 2px;
+            animation: musicPulse var(--speed) ease-in-out infinite alternate;
+        }
+
+        @keyframes musicPulse {
+            0% { height: 4px; }
+            100% { height: 18px; }
+        }
+
+        /* Quote card */
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #9a6078;
+            text-align: center;
+            padding: 8px 0;
+            position: relative;
+        }
+
+        .quote-text::before { content: "\201C"; font-size: 2.5rem; color: #ffb6c1; position: absolute; top: -10px; left: -5px; }
+        .quote-text::after { content: "\201D"; font-size: 2.5rem; color: #ffb6c1; position: absolute; bottom: -20px; right: -5px; }
+
+        .quote-author {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #c8809e;
+            margin-top: 12px;
+        }
+
+        /* Photo wall */
+        .photo-wall {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .photo-placeholder {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: transform 0.3s;
+            cursor: default;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .photo-placeholder:hover { transform: scale(1.08) rotate(2deg); }
+
+        /* Wishlist */
+        .wishlist {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wish-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.45);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 182, 193, 0.25);
+            transition: transform 0.2s;
+        }
+
+        .wish-item:hover { transform: translateX(6px); }
+
+        .wish-icon { font-size: 22px; }
+
+        .wish-text {
+            flex: 1;
+            font-size: 0.92rem;
+            color: #7a5068;
+        }
+
+        .wish-check {
+            font-size: 16px;
+            color: #ffb6c1;
+        }
+
+        /* Links */
+        .links {
+            display: flex;
+            gap: 14px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 26px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            border: none;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px rgba(255, 105, 135, 0.25);
+        }
+
+        .links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(255, 105, 135, 0.35);
+        }
+
+        /* Visitor counter */
+        .visitor {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #c8809e;
+        }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            color: #cda0b4;
+            font-size: 0.85rem;
+        }
+
+        /* Typing cursor */
+        .typing::after {
+            content: "|";
+            animation: blink 1s step-end infinite;
+            color: #ff6b9d;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Paw prints */
+        .paw-track {
+            position: fixed;
+            z-index: 0;
+            opacity: 0.06;
+            font-size: 28px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Divider */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #ffb6c1, #fecfef, #ffb6c1);
+            border-radius: 3px;
+            margin: 8px auto 20px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .card { padding: 22px; }
+            .container { padding: 40px 16px 30px; }
+            .avatar { width: 100px; height: 100px; font-size: 44px; }
+            .favorites { grid-template-columns: repeat(2, 1fr); }
+            .photo-wall { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background effects -->
+    <div class="hearts" id="hearts"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="avatar">&#x1F431;</div>
+            <h1>wlcxsysb410</h1>
+            <p class="tagline">&#x1F338; 欢迎来到我的粉色小窝 ~&#x1F338;<br>一个喜欢可爱事物的小世界</p>
+            <div class="status">
+                <div class="status-dot"></div>
+                &#x1F4D6; 正在探索新的有趣事物...
+            </div>
+        </div>
+
+        <!-- About Me -->
+        <div class="card">
+            <h2>&#x1F43E; 关于我</h2>
+            <p>
+                Hi~ 我是 <strong>wlcxsysb410</strong>，一个对世界充满好奇心的女孩子 &#x1F31F;<br><br>
+                喜欢一切可爱的、温柔的、有趣的东西！无论是窝在沙发上撸猫，
+                还是戴上耳机沉浸在喜欢的音乐里，又或者是在代码的世界里解开一个又一个谜题，
+                这些都是让我觉得幸福的时刻。<br><br>
+                这里是我在互联网上的一小片天地，记录生活中那些闪闪发光的瞬间 &#x2728;
+                希望来到这里的你，也能感受到一点点温暖和快乐~
+            </p>
+        </div>
+
+        <!-- Interests -->
+        <div class="card">
+            <h2>&#x1F380; 兴趣爱好</h2>
+            <p>让我开心的那些小事：</p>
+            <div class="interests">
+                <span class="tag">&#x1F4BB; 编程</span>
+                <span class="tag">&#x1F3B5; 音乐</span>
+                <span class="tag">&#x1F3AE; 游戏</span>
+                <span class="tag">&#x1F4DA; 阅读</span>
+                <span class="tag">&#x1F4F7; 摄影</span>
+                <span class="tag">&#x1F30D; 探索</span>
+                <span class="tag">&#x1F369; 甜食</span>
+                <span class="tag">&#x1F431; 猫猫</span>
+                <span class="tag">&#x1F3A8; 画画</span>
+                <span class="tag">&#x1F33B; 追剧</span>
+                <span class="tag">&#x2615; 奶茶</span>
+                <span class="tag">&#x1F319; 熬夜</span>
+            </div>
+        </div>
+
+        <!-- Favorites -->
+        <div class="card">
+            <h2>&#x1F496; 我的最爱</h2>
+            <p>那些占据我生活的可爱事物：</p>
+            <div class="favorites">
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F3B5;</span>
+                    <div class="fav-label">最爱歌手</div>
+                    <div class="fav-value">周杰伦</div>
+                </div>
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F3AC;</span>
+                    <div class="fav-label">最爱电影</div>
+                    <div class="fav-value">千与千寻</div>
+                </div>
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F4D6;</span>
+                    <div class="fav-label">最爱书籍</div>
+                    <div class="fav-value">小王子</div>
+                </div>
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F36D;</span>
+                    <div class="fav-label">最爱食物</div>
+                    <div class="fav-value">草莓蛋糕</div>
+                </div>
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F431;</span>
+                    <div class="fav-label">最爱动物</div>
+                    <div class="fav-value">猫咪</div>
+                </div>
+                <div class="fav-item">
+                    <span class="fav-icon">&#x1F338;</span>
+                    <div class="fav-label">最爱季节</div>
+                    <div class="fav-value">春天</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Now Playing -->
+        <div class="card">
+            <h2>&#x1F3B6; 正在听</h2>
+            <div class="now-playing">
+                <div class="music-icon">&#x1F4BF;</div>
+                <div class="music-info">
+                    <div class="music-title">晴天</div>
+                    <div class="music-artist">周杰伦</div>
+                </div>
+                <div class="music-bars">
+                    <div class="music-bar" style="--speed: 0.4s;"></div>
+                    <div class="music-bar" style="--speed: 0.6s;"></div>
+                    <div class="music-bar" style="--speed: 0.35s;"></div>
+                    <div class="music-bar" style="--speed: 0.5s;"></div>
+                    <div class="music-bar" style="--speed: 0.45s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Wall -->
+        <div class="card">
+            <h2>&#x1F4F8; 生活碎片</h2>
+            <p>用镜头记录下的美好瞬间：</p>
+            <div class="photo-wall">
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0);">&#x1F338;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">&#x2600;&#xFE0F;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">&#x1F33F;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">&#x1F30A;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #f48fb1);">&#x1F431;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #f3e5f5, #ce93d8);">&#x1F319;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fff8e1, #ffecb3);">&#x2B50;</div>
+                <div class="photo-placeholder" style="background: linear-gradient(135deg, #fce4ec, #ef9a9a);">&#x1F370;</div>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card">
+            <h2>&#x1F331; 成长足迹</h2>
+            <p>一路走来的小小里程碑：</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2025 春天</div>
+                    <div class="timeline-text">&#x1F3E0; 搭建了属于自己的个人主页，在互联网安了一个小家</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2025</div>
+                    <div class="timeline-text">&#x1F4BB; 开始学习编程，发现了代码世界的奇妙之处</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">更早以前</div>
+                    <div class="timeline-text">&#x1F431; 成为了一名合格的猫奴，每天被猫咪治愈</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">故事开始</div>
+                    <div class="timeline-text">&#x1F31F; 来到这个世界，开启了充满好奇的冒险旅程</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wishlist -->
+        <div class="card">
+            <h2>&#x1F320; 心愿清单</h2>
+            <p>那些想要实现的小愿望：</p>
+            <div class="wishlist">
+                <div class="wish-item">
+                    <span class="wish-icon">&#x2708;&#xFE0F;</span>
+                    <span class="wish-text">去一次日本看樱花</span>
+                    <span class="wish-check">&#x2B55;</span>
+                </div>
+                <div class="wish-item">
+                    <span class="wish-icon">&#x1F431;</span>
+                    <span class="wish-text">养一只橘猫和一只布偶</span>
+                    <span class="wish-check">&#x2B55;</span>
+                </div>
+                <div class="wish-item">
+                    <span class="wish-icon">&#x1F4DA;</span>
+                    <span class="wish-text">今年读完 20 本书</span>
+                    <span class="wish-check">&#x2B55;</span>
+                </div>
+                <div class="wish-item">
+                    <span class="wish-icon">&#x1F3B9;</span>
+                    <span class="wish-text">学会弹一首完整的钢琴曲</span>
+                    <span class="wish-check">&#x2B55;</span>
+                </div>
+                <div class="wish-item">
+                    <span class="wish-icon">&#x1F310;</span>
+                    <span class="wish-text">把个人网站做得超级好看</span>
+                    <span class="wish-check">&#x2705;</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quote -->
+        <div class="card">
+            <h2>&#x1F4AD; 一句话</h2>
+            <div class="quote-text">
+                生活要像粉色一样，温柔又充满甜蜜
+            </div>
+            <div class="quote-author">-- wlcxsysb410 的人生信条 &#x1F338;</div>
+        </div>
+
+        <!-- Links -->
+        <div class="links">
+            <a href="https://github.com/wlcxsysb410" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+            </a>
+        </div>
+
+        <!-- Visitor counter -->
+        <div class="visitor">
+            &#x1F43E; 你是第 <strong style="color:#e8578a; margin: 0 4px;">??? </strong> 位来访的小可爱
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&#x1F49D; &copy; 2025 wlcxsysb410 &middot; Made with &#x2764;&#xFE0F; &middot; Powered by GitHub Pages &#x1F49D;</p>
+            <p style="margin-top: 6px; font-size: 0.8rem;">&#x1F338; 愿每一个来到这里的人都能拥有粉色的好心情 &#x1F338;</p>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating hearts
+        const heartsContainer = document.getElementById('hearts');
+        const pinkHearts = ['\u2764\uFE0F', '\uD83D\uDC95', '\uD83D\uDC96', '\uD83C\uDF38', '\uD83C\uDF3A', '\u2728', '\uD83C\uDF3C', '\u2B50'];
+
+        for (let i = 0; i < 25; i++) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = pinkHearts[Math.floor(Math.random() * pinkHearts.length)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.setProperty('--size', (Math.random() * 16 + 12) + 'px');
+            heart.style.setProperty('--duration', (Math.random() * 8 + 8) + 's');
+            heart.style.setProperty('--delay', (Math.random() * 12) + 's');
+            heartsContainer.appendChild(heart);
+        }
+
+        // Decorative paw prints
+        const pawPositions = [
+            {x: 5, y: 8}, {x: 88, y: 12}, {x: 8, y: 35},
+            {x: 92, y: 30}, {x: 12, y: 60}, {x: 85, y: 55},
+            {x: 6, y: 82}, {x: 90, y: 78}, {x: 50, y: 4},
+            {x: 45, y: 95}, {x: 70, y: 18}, {x: 30, y: 90},
+        ];
+        pawPositions.forEach(pos => {
+            const paw = document.createElement('div');
+            paw.className = 'paw-track';
+            paw.textContent = '\uD83D\uDC3E';
+            paw.style.left = pos.x + '%';
+            paw.style.top = pos.y + '%';
+            paw.style.transform = 'rotate(' + (Math.random() * 60 - 30) + 'deg)';
+            document.body.appendChild(paw);
+        });
+    </script>
+</body>
+</html>
